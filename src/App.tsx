@@ -6,6 +6,8 @@ import { Projects } from './components/Projects'
 import { About, Contact, Footer, Stack } from './components/Sections'
 import { SettingsDialog } from './components/Settings'
 import { CapriStage } from './capri/CapriStage'
+import { ScrollRuler } from './components/ScrollRuler'
+import { RelicField } from './components/RelicField'
 
 export default function App() {
   const [ready, setReady] = useState(false)
@@ -16,6 +18,7 @@ export default function App() {
   return (
     <>
       {!booted && <Boot ready={ready} onDone={onDone} />}
+      <RelicField />
       <Header onSettings={() => setSettingsOpen(true)} />
       <main>
         <Hero />
@@ -25,6 +28,7 @@ export default function App() {
         <Contact />
       </main>
       <Footer />
+      {booted && <ScrollRuler />}
       <CapriStage onReady={onReady} active={booted} />
       {settingsOpen && <SettingsDialog onClose={() => setSettingsOpen(false)} />}
     </>

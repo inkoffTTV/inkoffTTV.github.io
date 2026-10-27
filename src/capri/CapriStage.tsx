@@ -67,6 +67,15 @@ export function CapriStage({ onReady, active }: { onReady: () => void; active: b
     const leave = () => { clearTimeout(hoverTimer); d.unperch() }
     cards.forEach(c => { c.addEventListener('pointerenter', enter); c.addEventListener('pointerleave', leave) })
 
+    // Opening a project link: the card tears and sheds shards for a beat.
+    const shatter = (e: Event) => {
+      const card = (e.currentTarget as HTMLElement).closest<HTMLElement>('.project'); if (!card) return
+      d.shatter(rectOf(card))
+      card.classList.remove('is-shatter'); void card.offsetWidth; card.classList.add('is-shatter')
+    }
+    const cardLinks = Array.from(document.querySelectorAll<HTMLElement>('.project a.btn'))
+    cardLinks.forEach(a => a.addEventListener('click', shatter))
+
     // Contact buttons: a cheer. Hero in view again: she comes back to her column.
     const cheer = () => { d.label({ verb: t.ticker.running, target: 'telegram' }, 3000); d.cheer() }
     const contacts = Array.from(document.querySelectorAll<HTMLElement>('#contact a.btn, .hero__cta a.btn--red'))
@@ -80,6 +89,7 @@ export function CapriStage({ onReady, active }: { onReady: () => void; active: b
       cards.forEach(c => { c.removeEventListener('pointerenter', enter); c.removeEventListener('pointerleave', leave) })
       d.setWindowElements([])
       contacts.forEach(a => a.removeEventListener('click', cheer))
+      cardLinks.forEach(a => a.removeEventListener('click', shatter))
       io?.disconnect()
     }
   }, [active, t])

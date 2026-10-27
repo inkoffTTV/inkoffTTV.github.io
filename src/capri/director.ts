@@ -172,6 +172,17 @@ export class Director {
   // She dives into the card she sits on and looks out of it with her eyes.
   possess() { const c = this.capri; if (c && c.canPossess()) c.possess() }
 
+  // A card being opened: it tears into slices and throws shards, like her teleport.
+  shatter(rect: Rect) {
+    const fx = this.fx; if (!fx) return
+    const cx = rect.x + rect.w / 2, cy = rect.y + rect.h / 2
+    fx.slices(cx, rect.y, rect.w, rect.h, { count: 12, life: 260 })
+    fx.burst(cx, cy, { count: 18, power: 0.8, spread: rect.w * 0.5 })
+    fx.ring(cx, cy, { size: 1.2 })
+    const c = this.capri
+    if (c && !c.busy && c.stance === 'sit') c.perform('flinch', c.towardCenter())
+  }
+
   // Something good happened (a contact click): her victory beat with the laugh cut-in.
   async cheer() { const c = this.capri; if (!c || c.busy) return; await c.celebrate() }
 

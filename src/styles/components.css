@@ -48,8 +48,9 @@
 .hero__cta { display: flex; gap: 12px; flex-wrap: wrap; }
 .hero__hint { margin-top: 28px; font-size: 11px; letter-spacing: .2em; color: var(--fg-3); text-transform: uppercase; }
 .hero__stage { position: relative; min-height: 520px; }
-.hero__bg { position: absolute; inset: 0; z-index: -1; background: url('/capri/bg-eyes.jpg') center / cover no-repeat; opacity: .14; mask-image: linear-gradient(to right, transparent 0%, #000 45%, #000 80%, transparent 100%); }
-:root[data-theme='light'] .hero__bg { opacity: .1; }
+.hero__bg { position: absolute; inset: 0; z-index: 0; background: url('/capri/bg-eyes.jpg') center / cover no-repeat; opacity: .08; mask-image: linear-gradient(to right, transparent 0%, #000 45%, #000 80%, transparent 100%); }
+:root[data-theme='light'] .hero__bg { opacity: .06; }
+.hero__grid { position: relative; z-index: 1; }
 
 /* ---------- projects ---------- */
 .projects { display: grid; gap: 24px; }
@@ -130,3 +131,30 @@
 .capri-fallback { position: absolute; right: 0; bottom: 0; width: min(60%, 260px); opacity: .9; }
 .capri-stage canvas.mask { position: absolute; left: 0; top: 0; pointer-events: none; }
 .capri-stage [hidden] { display: none !important; }
+
+/* ---------- scroll ruler ---------- */
+.ruler { position: fixed; right: 10px; top: 90px; bottom: 90px; width: 56px; z-index: 6; pointer-events: none; font-family: var(--font-mono); }
+.ruler__ticks { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; }
+.ruler__tick { width: 10px; height: 1px; background: var(--fg-3); opacity: .35; transition: opacity .2s; }
+.ruler__tick.is-major { width: 18px; opacity: .6; }
+.ruler__marker { position: absolute; right: 0; width: 26px; height: 2px; background: var(--green); box-shadow: 0 0 8px var(--green); transform: translateY(-1px); }
+.ruler__mark { position: absolute; right: 30px; transform: translateY(-50%); font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--fg-3); white-space: nowrap; pointer-events: auto; transition: color .2s; }
+.ruler__mark.is-active { color: var(--green); }
+.ruler__pct { position: absolute; right: 0; bottom: -22px; font-size: 10px; color: var(--fg-3); letter-spacing: .1em; }
+@media (max-width: 900px) { .ruler { display: none; } }
+
+/* ---------- relic field (pointer glitch, under the content) ---------- */
+.relic { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; mix-blend-mode: screen; }
+:root[data-theme='light'] .relic { mix-blend-mode: multiply; }
+main, .header, .footer { position: relative; z-index: 1; }
+
+/* ---------- card shatter on open ---------- */
+.project.is-shatter { animation: shatter .42s steps(2, end); }
+@keyframes shatter {
+  0% { clip-path: inset(0 0 0 0); transform: translate(0, 0); filter: none; }
+  20% { clip-path: inset(12% 0 55% 0); transform: translate(-8px, 0); }
+  40% { clip-path: inset(0 0 0 0); transform: translate(6px, 0); filter: drop-shadow(-4px 0 0 var(--red)) drop-shadow(4px 0 0 var(--green)); }
+  60% { clip-path: inset(60% 0 8% 0); transform: translate(-5px, 0); }
+  80% { clip-path: inset(0 0 0 0); transform: translate(3px, 0); filter: drop-shadow(-2px 0 0 var(--violet)); }
+  100% { clip-path: inset(0 0 0 0); transform: translate(0, 0); filter: none; }
+}
