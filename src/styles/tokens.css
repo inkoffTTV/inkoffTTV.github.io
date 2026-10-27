@@ -1,0 +1,44 @@
+/* Palette sampled from capri-desktop (src/renderer/styles/capri.css), kept in hex for broad support. */
+:root {
+  --ink: #14101c;
+  --ink-2: #1f1829;
+  --ink-3: #2a2136;
+  --paper: #fff4f6;
+  --paper-2: #d8c7d2;
+  --paper-3: #a58fa0;
+  --red: #ff2152;
+  --green: #36ff7a;
+  --violet: #7b3dff;
+  --blue: #3d6bff;
+
+  --bg: var(--ink);
+  --bg-2: var(--ink-2);
+  --bg-3: var(--ink-3);
+  --fg: var(--paper);
+  --fg-2: var(--paper-2);
+  --fg-3: var(--paper-3);
+  --plate: var(--paper);
+  --plate-fg: var(--ink);
+  --line: rgba(255, 244, 246, 0.12);
+
+  --font-display: 'Chakra Petch', 'Bahnschrift', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+
+  --cut: 14px;
+  --cut-sm: 8px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --gutter: clamp(16px, 4vw, 64px);
+  --measure: 62ch;
+}
+
+:root[data-theme='light'] {
+  --bg: #f6eef1;
+  --bg-2: #fff4f6;
+  --bg-3: #eadfe5;
+  --fg: #14101c;
+  --fg-2: #3b2f45;
+  --fg-3: #6e5f78;
+  --plate: #14101c;
+  --plate-fg: #fff4f6;
+  --line: rgba(20, 16, 28, 0.14);
+}
