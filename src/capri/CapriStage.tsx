@@ -49,7 +49,7 @@ export function CapriStage({ onReady, active }: { onReady: () => void; active: b
   useEffect(() => {
     if (!active || !shared) return
     const d = shared
-    d.label({ verb: t.ticker.showing, target: 'portfolio' }, 3200)
+    d.enter().then(() => d.label({ verb: t.ticker.showing, target: 'portfolio' }, 3200))
 
     // The project cards are her windows. Hovering one for a moment: she comes and sits on it.
     const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-capri-window]'))

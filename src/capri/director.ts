@@ -8,6 +8,8 @@ import { reducedMotion, pick, rand } from './vendor/util.js'
 import { Ticker, type TickerAction } from './ticker'
 
 const CUTINS = ['grin', 'laugh', 'eyes', 'many', 'look'] as const
+// her close-up for the intro (fx.js GRAB_FRAMES): at rest, mouth ajar / half / wide, three waves, the arm smear, eyes shut
+const GRAB = ['grab', 'mouth1', 'mouth2', 'mouth3', 'wave1', 'wave2', 'wave3', 'smear', 'happy'] as const
 const silentVoice = { play() {}, configure() {} }
 
 function loadImage(src: string) {
@@ -45,15 +47,19 @@ export class Director {
   async boot({ home }: { home: () => Rect | null }): Promise<boolean> {
     this.homeRect = home
     if (!hasWebGL()) return false
-    const [image, ...cutins] = await Promise.all([
+    const [image, intro, ...cutins] = await Promise.all([
       loadImage(`${this.base}capri/capri-full.png`),
+      // decoded now, not the first time each one shows (a hitch right on "hi")
+      Promise.all(GRAB.map(n => loadImage(`${this.base}capri/intro-${n}.webp`).then(i => createImageBitmap(i)).catch(() => null)))
+        .then(cels => (cels[0] ? Object.fromEntries(GRAB.map((n, i) => [n, cels[i]])) : null)),
       ...CUTINS.map(n => loadImage(`${this.base}capri/cutin-${n}.png`).catch(() => null)),
       document.fonts.load('600 16px "Chakra Petch"').catch(() => null),
       document.fonts.load('400 11px "JetBrains Mono"').catch(() => null),
     ])
     if (this.disposed) return false
     const { fx, root, sprite, mask } = this.els
-    this.fx = new FxLayer(fx, { cutins: Object.fromEntries(CUTINS.map((n, i) => [n, cutins[i]])) })
+    this.fx = new FxLayer(fx, { cutins: Object.fromEntries(CUTINS.map((n, i) => [n, cutins[i]])), intro })
+    this.hasIntro = Boolean(intro)
     this.fx.resize(innerWidth, innerHeight)
     let capri: InstanceType<typeof Capri>
     try {
@@ -80,12 +86,30 @@ export class Director {
     addEventListener('scroll', this.onScroll, { passive: true })
     addEventListener('mousemove', this.onMouse)
     document.addEventListener('mouseleave', this.onLeave)
-    const at = this.homeSpot()
-    capri.pos = { ...at }
-    await capri.materialize(at)
-    capri.nextMove = performance.now() + rand(20000, 40000)
-    this.scheduleIdleLabel()
+    // she stays unseen until enter(): the boot screen is still up
+    capri.p.alpha = 0
+    capri.pos = { ...this.homeSpot() }
+    capri.place()
     return true
+  }
+
+  hasIntro = false
+  private entered = false
+  // The boot screen is gone: she comes in. With her close-up frames, her intro from the app: she
+  // grabs the screen by its edges, says hi, waves, slips and dives down to her spot, where her
+  // body unfolds from her face. Without them (or with reduced motion), a plain materialize.
+  async enter() {
+    const c = this.capri; if (!c || this.entered) return
+    this.entered = true
+    const at = this.homeSpot()
+    if (this.hasIntro && !reducedMotion.matches) {
+      // the intro is time-based on rAF; if the tab was hidden through it, don't leave her unseen
+      const guard = new Promise<void>(r => setTimeout(r, 9000))
+      await Promise.race([c.intro(at, { label: 'hi', caption: 'PROJECT CAPRICORN' }), guard])
+      if (c.p.alpha < 0.5) { c.busy = false; await c.materialize(at) }
+    } else await c.materialize(at)
+    c.nextMove = performance.now() + rand(20000, 40000)
+    this.scheduleIdleLabel()
   }
 
   // Where she stands on the first screen: the column the hero keeps free for her.
