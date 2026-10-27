@@ -59,7 +59,7 @@ export function CapriStage({ onReady, active }: { onReady: () => void; active: b
       const card = e.currentTarget as HTMLElement
       clearTimeout(hoverTimer)
       hoverTimer = window.setTimeout(() => {
-        const name = card.querySelector('.project__title')?.textContent || ''
+        const name = card.dataset.capriName || card.querySelector('.project__title')?.textContent || ''
         d.label({ verb: t.ticker.editing, target: name }, 4000)
         d.perch(card.dataset.capriWindow || card.id)
       }, 500)
@@ -69,11 +69,12 @@ export function CapriStage({ onReady, active }: { onReady: () => void; active: b
 
     // Opening a project link: the card tears and sheds shards for a beat.
     const shatter = (e: Event) => {
-      const card = (e.currentTarget as HTMLElement).closest<HTMLElement>('.project'); if (!card) return
+      const a = e.currentTarget as HTMLElement
+      const card = document.querySelector<HTMLElement>(`[data-capri-window="${a.dataset.project}"]`) || a.closest<HTMLElement>('.project'); if (!card) return
       d.shatter(rectOf(card))
       card.classList.remove('is-shatter'); void card.offsetWidth; card.classList.add('is-shatter')
     }
-    const cardLinks = Array.from(document.querySelectorAll<HTMLElement>('.project a.btn'))
+    const cardLinks = Array.from(document.querySelectorAll<HTMLElement>('a[data-shatter]'))
     cardLinks.forEach(a => a.addEventListener('click', shatter))
 
     // Contact buttons: a cheer. Hero in view again: she comes back to her column.

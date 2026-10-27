@@ -2,6 +2,8 @@ import { useT } from '../i18n'
 import { useSettings } from '../lib/settings'
 import { projects, type Project } from '../content/projects'
 import { timeAgo, useRepo } from '../lib/github'
+import { useMedia } from '../lib/useMedia'
+import { Deck } from './Deck'
 
 function Card({ p }: { p: Project }) {
   const t = useT(); const { settings } = useSettings()
@@ -10,7 +12,7 @@ function Card({ p }: { p: Project }) {
   const name = p.repo.split('/')[1]
   return (
     <div className="plate-offset" data-accent={p.accent}>
-    <article className="project cut" data-accent={p.accent} id={`project-${p.id}`} data-capri-window={p.id}>
+    <article className="project cut" data-accent={p.accent} id={`project-${p.id}`} data-capri-window={p.id} data-capri-name={name}>
       <div>
         <div className="project__kicker"><span>{p.id === 'vicinity' ? t.ticker.running : t.ticker.editing}</span><span>{name}</span></div>
         <h3 className="project__title">{name}</h3>
@@ -28,10 +30,10 @@ function Card({ p }: { p: Project }) {
           </>}
         </div>
         <div className="project__links">
-          <a className="btn cut-sm" href={p.links.repo} target="_blank" rel="noreferrer">{t.projects.repo}</a>
-          {p.links.download && <a className="btn btn--red cut-sm" href={p.links.download} target="_blank" rel="noreferrer">{t.projects.download}</a>}
-          {p.links.site && <a className="btn btn--ghost cut-sm" href={p.links.site} target="_blank" rel="noreferrer">{t.projects.site}</a>}
-          {p.links.releases && <a className="btn btn--ghost cut-sm" href={p.links.releases} target="_blank" rel="noreferrer">{t.projects.releases}</a>}
+          <a className="btn cut-sm" data-shatter data-project={p.id} href={p.links.repo} target="_blank" rel="noreferrer">{t.projects.repo}</a>
+          {p.links.download && <a className="btn btn--red cut-sm" data-shatter data-project={p.id} href={p.links.download} target="_blank" rel="noreferrer">{t.projects.download}</a>}
+          {p.links.site && <a className="btn btn--ghost cut-sm" data-shatter data-project={p.id} href={p.links.site} target="_blank" rel="noreferrer">{t.projects.site}</a>}
+          {p.links.releases && <a className="btn btn--ghost cut-sm" data-shatter data-project={p.id} href={p.links.releases} target="_blank" rel="noreferrer">{t.projects.releases}</a>}
         </div>
       </div>
       <div className="project__side">
@@ -47,6 +49,8 @@ function Card({ p }: { p: Project }) {
 
 export function Projects() {
   const t = useT()
+  const wide = useMedia('(min-width: 900px) and (hover: hover)')
+  if (wide) return <Deck />
   return (
     <section className="section" id="projects">
       <div className="wrap">

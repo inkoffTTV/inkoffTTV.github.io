@@ -158,3 +158,28 @@ main, .header, .footer { position: relative; z-index: 1; }
   80% { clip-path: inset(0 0 0 0); transform: translate(3px, 0); filter: drop-shadow(-2px 0 0 var(--violet)); }
   100% { clip-path: inset(0 0 0 0); transform: translate(0, 0); filter: none; }
 }
+
+/* ---------- deck: projects as a stack of tilted cards ---------- */
+.deck { padding-block: 0; }
+.deck__sticky { position: sticky; top: 60px; height: calc(100vh - 60px); display: flex; flex-direction: column; justify-content: center; overflow: clip; }
+.deck .section__head { margin-bottom: clamp(16px, 2.5vw, 36px); }
+.deck__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 46%); gap: clamp(24px, 4vw, 64px); align-items: start; }
+.deck__item { display: grid; grid-template-columns: 44px 1fr; grid-template-rows: auto auto; column-gap: 12px; text-align: left; padding: 10px 0; width: 100%; color: var(--fg-3); transition: color .25s; }
+.deck__item:hover, .deck__item.is-active { color: var(--fg); }
+.deck__num { grid-row: 1 / span 2; font-family: var(--font-mono); font-size: 12px; letter-spacing: .2em; padding-top: 14px; color: var(--green); opacity: .5; }
+.deck__item.is-active .deck__num { opacity: 1; }
+.deck__title { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 5.6vw, 92px); line-height: .92; text-transform: uppercase; letter-spacing: -.01em; transition: transform .35s var(--ease-out); }
+.deck__item.is-active .deck__title { transform: translateX(6px); }
+.deck__tag { font-size: 13px; color: var(--fg-3); margin-top: 6px; }
+.deck__detail { margin-top: 18px; max-width: 56ch; animation: detail-in .35s var(--ease-out); }
+@keyframes detail-in { from { opacity: 0; transform: translateY(8px); } }
+.deck__desc { color: var(--fg-2); margin: 0 0 8px; }
+.deck__stage { position: relative; height: min(70vh, 640px); perspective: 1400px; perspective-origin: 50% 30%; }
+.deck__slot { position: absolute; inset: 0; transform-origin: 50% 0; transition: transform .45s var(--ease-out), opacity .45s, filter .45s; will-change: transform; }
+.deck__card { display: grid; grid-template-rows: auto 1fr auto; gap: 18px; height: 100%; padding: 20px; background: var(--bg-2); overflow: hidden; }
+.deck__card .project__art { aspect-ratio: auto; height: clamp(160px, 28vh, 280px); }
+.deck__card .project__bullets { margin: 0; overflow: auto; }
+.deck__card .project__bullets li { font-size: 13px; }
+@media (max-width: 1100px) { .deck__card .project__bullets li { font-size: 12px; } }
+.deck__card .chips { align-items: flex-start; align-content: flex-start; }
+.deck__card .project__bullets { min-height: 0; }
